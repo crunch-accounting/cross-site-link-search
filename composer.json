@@ -1,0 +1,7 @@
+{
+	"name": "crunch/extra-links-search",
+	"type": "wordpress-plugin",
+	"require": {
+		"composer/installers": "~1.0"
+	}
+}
