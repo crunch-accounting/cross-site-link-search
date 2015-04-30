@@ -6,7 +6,7 @@ class _WP_Editors {
     }
 }
 
-class StackTest extends PHPUnit_Framework_TestCase
+class LinkSearchTest extends PHPUnit_Framework_TestCase
 {
     public function setUp() {
         \WP_Mock::setUp();
