@@ -40,8 +40,9 @@ class CSLS_Link_Searcher {
 	 * is for it only to be called from server side.
 	 */
 	public static function cross_site_link_search() {
-		if ($_POST['key'] !== self::$key) {
+		if (!isset($_POST['key']) || $_POST['key'] !== self::$key) {
 			wp_die( -1 );
+			return;
 		}
 		$result = self::insecure_wp_link_ajax();
 		echo json_encode( $result )."\n";
@@ -65,11 +66,15 @@ class CSLS_Link_Searcher {
 			$args['s'] = wp_unslash( $_POST['search'] );
 			$args['pagenum'] = ! empty( $_POST['page'] ) ? absint( $_POST['page'] ) : 1;;
 
-			require(ABSPATH . WPINC . '/class-wp-editor.php');
+			if (!class_exists('_WP_Editors')) {
+				require(ABSPATH . WPINC . '/class-wp-editor.php');
+			}
 			$results = _WP_Editors::wp_link_query( $args );
+
+			return $results;
 		}
 
-		return $results;
+		return null;
 	}
 
 	/**
