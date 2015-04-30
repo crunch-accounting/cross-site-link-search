@@ -129,7 +129,10 @@ class CSLS_Link_Searcher {
 		// Forward the POST on to the other API:
 		$rawResult = wp_remote_post(
 			'https://'.$_SERVER["SERVER_NAME"].$route.'/wp-admin/admin-ajax.php',
-			array('body' => $request)
+			array(
+				'sslverify' => false,
+				'body' => $request
+			)
 		);
 
 		return json_decode($rawResult['body']);
