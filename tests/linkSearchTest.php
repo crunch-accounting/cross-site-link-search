@@ -49,6 +49,7 @@ class LinkSearchTest extends PHPUnit_Framework_TestCase
         \WP_Mock::wpPassthruFunction( 'check_ajax_referer', array('times' => 1) );
         \WP_Mock::wpFunction( 'wp_die', array('times' => 1));
 
+        \WP_Mock::wpFunction( 'is_wp_error', array('times' => 1, 'return' => false));
         \WP_Mock::wpFunction(
             'wp_remote_post',
             array(
@@ -62,5 +63,27 @@ class LinkSearchTest extends PHPUnit_Framework_TestCase
 
         // Assert (should contain responses from the original query and the wp_remote call):
         $this->expectOutputString("[{\"testOutput\":\"otherSuccess\"},{\"testOutput\":\"success\"}]\n");
+    }
+
+    public function testRemoteSiteError ()
+    {
+        // Arrange:
+        $_SERVER['SERVER_NAME'] = 'my.test.domain';
+        $_POST['search'] = 'Crunch';
+        \WP_Mock::wpPassthruFunction( 'wp_unslash' );
+        \WP_Mock::wpPassthruFunction( 'check_ajax_referer', array('times' => 1) );
+        \WP_Mock::wpFunction( 'wp_die', array('times' => 1));
+
+        \WP_Mock::wpFunction( 'is_wp_error', array('times' => 1, 'return' => true));
+        \WP_Mock::wpFunction(
+            'wp_remote_post',
+            array('times' => 1)
+        );
+
+        // Act:
+        $result = CSLS_Link_Searcher::ajax_get_link_search_results();
+
+        // Assert (should contain responses from the original query but not the wp_remote call which errored):
+        $this->expectOutputString("[{\"testOutput\":\"success\"}]\n");
     }
 }

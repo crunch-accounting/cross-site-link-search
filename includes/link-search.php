@@ -135,6 +135,11 @@ class CSLS_Link_Searcher {
 			)
 		);
 
+		if (is_wp_error($rawResult)) {
+			// Fail siilently by returning an empty array:
+			return [];
+		}
+
 		return json_decode($rawResult['body']);
 	}
 }
