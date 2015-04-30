@@ -1,6 +1,14 @@
 <?php
 
-class Cross_Site_Link_Search_Settings {
+class CSLS_Settings {
+
+	public static function load () {
+		// Register the settings:
+		add_action( 'admin_init', array( __CLASS__, 'add_settings' ) );
+
+		// Add the options page:
+		add_action( 'admin_menu', array( __CLASS__, 'add_options_page' ) );
+	}
 
 	public static function add_settings () {
 		add_settings_section(
