@@ -1,5 +1,5 @@
 {
-	"name": "crunch/extra-links-search",
+	"name": "crunch/cross-site-link-search",
 	"type": "wordpress-plugin",
 	"require": {
 		"composer/installers": "~1.0"
