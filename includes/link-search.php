@@ -127,17 +127,11 @@ class CSLS_Link_Searcher {
 		$request['key'] = self::$key;
 
 		// Forward the POST on to the other API:
-		$ch = curl_init();
-		curl_setopt( $ch , CURLOPT_SSL_VERIFYPEER , false    );
-		curl_setopt( $ch , CURLOPT_RETURNTRANSFER , true     );
-		curl_setopt( $ch , CURLOPT_POST           , true     );
-		curl_setopt( $ch , CURLOPT_POSTFIELDS     , $request );
-		curl_setopt( $ch , CURLOPT_URL            , 'https://'.$_SERVER["SERVER_NAME"].$route.'/wp-admin/admin-ajax.php' );
+		$rawResult = wp_remote_post(
+			'https://'.$_SERVER["SERVER_NAME"].$route.'/wp-admin/admin-ajax.php',
+			array('body' => $request)
+		);
 
-		$result = curl_exec($ch);
-
-		curl_close($ch);
-
-		return json_decode($result);
+		return json_decode($rawResult['body']);
 	}
 }

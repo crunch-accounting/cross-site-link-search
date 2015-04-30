@@ -2,7 +2,7 @@
 
 class _WP_Editors {
     public static function wp_link_query () {
-        return array("testOutput" => "success");
+        return [array("testOutput" => "success")];
     }
 }
 
@@ -37,6 +37,30 @@ class StackTest extends PHPUnit_Framework_TestCase
 
         $result = CSLS_Link_Searcher::cross_site_link_search();
 
-        $this->expectOutputString("{\"testOutput\":\"success\"}\n");
+        $this->expectOutputString("[{\"testOutput\":\"success\"}]\n");
+    }
+
+    public function testAjaxGetLinkSearchResultsMergesQueries()
+    {
+        // Arrange:
+        $_SERVER['SERVER_NAME'] = 'my.test.domain';
+        $_POST['search'] = 'Crunch';
+        \WP_Mock::wpPassthruFunction( 'wp_unslash' );
+        \WP_Mock::wpPassthruFunction( 'check_ajax_referer', array('times' => 1) );
+        \WP_Mock::wpFunction( 'wp_die', array('times' => 1));
+
+        \WP_Mock::wpFunction(
+            'wp_remote_post',
+            array(
+                'times' => 1,
+                'return' => array('body' => "[{\"testOutput\":\"otherSuccess\"}]")
+            )
+        );
+
+        // Act:
+        $result = CSLS_Link_Searcher::ajax_get_link_search_results();
+
+        // Assert (should contain responses from the original query and the wp_remote call):
+        $this->expectOutputString("[{\"testOutput\":\"otherSuccess\"},{\"testOutput\":\"success\"}]\n");
     }
 }
