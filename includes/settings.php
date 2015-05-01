@@ -51,15 +51,19 @@ class CSLS_Settings {
 	}
 
 	public static function csls_expose_search_callback () {
-		echo '<input name="csls_expose_search" id="csls_expose_search" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'csls_expose_search' ), false ) . ' /> Whether this installation should allow other wordpress installs with the same key to see its link search';
+		echo '<input name="csls_expose_search" id="csls_expose_search" type="checkbox" value="1" class="code" ' . checked( 1, get_option( 'csls_expose_search' ), false ) . ' />';
+		echo 'Whether this installation should allow other wordpress installs with the same key to see its link search';
 	}
 
 	public static function csls_key_callback () {
-		echo '<input name="csls_key" id="csls_key" type="text" class="code" value="' . get_option( 'csls_key' )  . '" /> A key which matches that in the other installations. Generate with <code>openssl rand -base64 32</code>';
+		echo '<input name="csls_key" id="csls_key" type="text" class="code" value="' . get_option( 'csls_key' )  . '" />';
+		echo 'A key which matches that in the other installations. Generate with <code>openssl rand -base64 32</code>';
 	}
 
 	public static function csls_routes_callback () {
-		echo '<input name="csls_routes" id="csls_routes" type="text" class="code" value="' . get_option( 'csls_routes' )  . '" /> A comma separated list of routes to wordpress installs to search for links in. Relative to the site root (e.g. /blog)';
+		echo '<input name="csls_routes" id="csls_routes" type="text" class="code" value="' . get_option( 'csls_routes' )  . '" />';
+		echo 'A comma separated list of routes to wordpress installs to search for links in.';
+		echo 'These can either be absolute (e.g. https://myblog.wordpress.com) or relative to the site root (e.g. /blog).';
 	}
 
 	public static function add_options_page() {

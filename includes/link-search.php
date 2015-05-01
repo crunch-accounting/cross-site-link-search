@@ -126,9 +126,16 @@ class CSLS_Link_Searcher {
 		$request['action'] = 'cross_site_link_search';
 		$request['key'] = self::$key;
 
+		try {
+			$url = self::get_url($route);
+		} catch (InvalidArgumentException $e) {
+			// Fail siilently by returning an empty array:
+			return [];
+		}
+		
 		// Forward the POST on to the other API:
 		$rawResult = wp_remote_post(
-			'https://'.$_SERVER["SERVER_NAME"].$route.'/wp-admin/admin-ajax.php',
+			$url,
 			array(
 				'sslverify' => false,
 				'body' => $request
@@ -141,5 +148,22 @@ class CSLS_Link_Searcher {
 		}
 
 		return json_decode($rawResult['body']);
+	}
+
+	private static function get_url ($route) {
+		if (preg_match('/^https?:\/\//', $route)) {
+			// This is an aboslute URL:
+			return implode('/', [$route, 'wp-admin', 'admin-ajax.php']);
+		}
+		elseif ($route === '/') {
+			// If the route points to '/' then omit it to avoid the double forward slash
+			return 'https://'.$_SERVER["SERVER_NAME"].implode('/', ['', 'wp-admin', 'admin-ajax.php']);
+		}
+		elseif ($route[0] === '/') {
+			return 'https://'.$_SERVER["SERVER_NAME"].implode('/', [$route, 'wp-admin', 'admin-ajax.php']);
+		}
+		else {
+			throw new InvalidArgumentException("Cannot work out the URL if the route does not start with 'http' or '/'");
+		}
 	}
 }

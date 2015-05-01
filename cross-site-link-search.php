@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Cross Site Link Search
  * Description: Add other wordpress sites to the link search results.
- * Version: 0.1.1
+ * Version: 0.2.0
  * Author: Crunch
  * Author URI: http://www.crunch.co.uk/
  *
